@@ -1,2 +1,2 @@
-/local refers to code that was run on the local machine in python or r
-/hpc refers to scripts that were run on UVA's high performance computing cluster
+- `local/` refers to code that was run on the local machine in python or r
+- `hpc/` refers to scripts that were run on UVA's high performance computing cluster
