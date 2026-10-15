@@ -5,13 +5,8 @@ output: html_notebook
 
 ```{r}
 # Replace the path below with your actual directory path
-new_directory <- "C:/Users/jmf7ak/OneDrive - University of Virginia/24_SPRING/oxygen_evolutions"
-
+workdir <- "C:/Users/jmf7ak/OneDrive - University of Virginia/25_SPRING/Evolution_paper/media_evolution_paper"
 # Set the working directory
-setwd(new_directory)
-
-# Check if the working directory has been updated
-getwd()
 ```
 
 ```{r, setup }
@@ -20,14 +15,14 @@ library(stringr)
 library(dplyr)
 library(ggplot2)
 library(tidyverse)
-library(dplyr)
-library(ggplot2)
 library(reshape2)
+library(ggpubr)
+library(ggsignif)
 ```
 
 ```{r}
 # Replace 'path_to_workbook' with the actual path to your Excel file
-path_to_workbook <- "C:/Users/jmf7ak/OneDrive - University of Virginia/24_SPRING/oxygen_evolutions/OXYGEN_EVOLUTION.xlsx"
+path_to_workbook <- file.path(workdir, "data/OXYGEN_EVOLUTION.xlsx")
 
 # Get the sheet names from the workbook
 sheet_names <- excel_sheets(path_to_workbook)
@@ -65,7 +60,7 @@ stds_long <- melt(stds, id.vars = "Drug", variable.name = "Day_No", value.name =
 data=cbind(means_long, stds_long$STD)
 # Create a line plot for each sample
 
-ggplot(data, aes(x = Day_No, y = MIC, color = Drug, group=Drug)) +
+ ggplot(data, aes(x = Day_No, y = MIC, color = Drug, group=Drug)) +
   geom_line(aes(color=Drug), size=1) +
   geom_point(size=2)+
   theme_bw()+
@@ -79,6 +74,9 @@ ggplot(data, aes(x = Day_No, y = MIC, color = Drug, group=Drug)) +
     legend.title = element_text(size = 20), # Change font size of legend title
   panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
   labs(x = "Day", y = expression(log[2]('MIC')), title = "Anaerobic Evolution")
+
+pq = file.path(workdir, "figures")
+ggsave('figure_3B.png',path = pq , width = 7, height = 5, device='png', dpi=500)
 ```
 
 
@@ -125,12 +123,15 @@ ggplot(data, aes(x = Day_No, y = MIC, color = Drug, group=Drug)) +
     legend.title = element_text(size = 20), # Change font size of legend title
   panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
   labs(x = "Day", y = expression(log[2]('MIC')), title = "Aerobic Evolution")
+
+pq = file.path(workdir, "figures")
+ggsave('figure_3A.png',path = pq , width = 7, height = 5, device='png', dpi=500)
 ```
 
 
 ```{r make boxplot aerobic}
 # Replace 'path_to_workbook' with the actual path to your Excel file
-path_to_workbook <- "C:/Users/jmf7ak/OneDrive - University of Virginia/24_SPRING/oxygen_evolutions/OXYGEN_EVOLUTION.xlsx"
+path_to_workbook <- file.path(workdir, "data/OXYGEN_EVOLUTION.xlsx")
 
 # Get the sheet names from the workbook
 sheet_names <- excel_sheets(path_to_workbook)
@@ -179,14 +180,11 @@ ggplot(df, aes(x = factor(experiment, c('anaerobic','aerobic')), y = FC$d14, fil
     panel.grid.major = element_blank(), panel.grid.minor = element_blank())
   
 
-pq=getwd()
-ggsave('grantfigg.tiff',path = pq , width = 7, height = 5, device='tiff', dpi=500)
+#pq = file.path(workdir, "figures")
+#ggsave('figure_1C.png',path = pq , width = 7, height = 5, device='png', dpi=500)
 ```
 
 ```{r anaerobic to aerobic plots}
-library(dplyr)
-library(ggplot2)
-library(ggpubr)
 # Step 1: Calculate per-Drug max for label.y
 label_positions <- df %>%
   group_by(Drug) %>%
@@ -230,14 +228,13 @@ for (i in seq_along(label_positions$Drug)) {
 }
 
 p
-# Step 4: Save the plot
-pq <- getwd()
-ggsave('oxygen_evolution.png', plot = p, path = pq, width = 7, height = 5, device = 'png', dpi = 500)
+pq = file.path(workdir, "figures")
+ggsave('figure_3C.png',path = pq , width = 7, height = 5, device='png', dpi=500)
 ```
 
 
 ```{r anaerobic to aerobic plots}
-path_to_workbook <- "C:/Users/jmf7ak/OneDrive - University of Virginia/24_SPRING/oxygen_evolutions/anaerobic_to_aerobic.xlsx"
+path_to_workbook <- file.path(workdir, "data/anaerobic_to_aerobic.xlsx")
 #a36-kw132
 # Get the sheet names from the workbook
   df <- read_excel(path = path_to_workbook)
@@ -246,7 +243,7 @@ path_to_workbook <- "C:/Users/jmf7ak/OneDrive - University of Virginia/24_SPRING
                         cols = c(Anaerobic, Aerobic), 
                         names_to = "Condition", 
                         values_to = "Value")
-  yo=ggplot(df_long, aes(x = factor(Condition, c('Anaerobic','Aerobic')), y = Value, fill = drug)) +
+  yo = ggplot(df_long, aes(x = factor(Condition, c('Anaerobic','Aerobic')), y = Value, fill = drug)) +
   geom_boxplot(outlier.shape = NA) +
   facet_wrap(.~ factor(drug, c('PIP','TOB', 'CIP'))) +
   theme_bw() +
@@ -269,11 +266,12 @@ path_to_workbook <- "C:/Users/jmf7ak/OneDrive - University of Virginia/24_SPRING
     
   )
   yo
-  ggsave('anaerobic_aerobic.png', plot = yo, path = pq, width = 7, height = 5, device = 'png', dpi = 500)
+  pq = file.path(workdir, "figures")
+  ggsave('figure_4B.png',plot = yo, path = pq , width = 7, height = 5, device='png', dpi=500)
 ```
 
 ```{r aerobic to anaerobic plots}
-path_to_workbook <- "C:/Users/jmf7ak/OneDrive - University of Virginia/24_SPRING/oxygen_evolutions/aerobic_to_anaerobic_2025.xlsx"
+path_to_workbook <- file.path(workdir, "data/aerobic_to_anaerobic.xlsx")
 #a36-kw132
 # Get the sheet names from the workbook
   # Get the sheet names from the workbook
@@ -306,14 +304,13 @@ path_to_workbook <- "C:/Users/jmf7ak/OneDrive - University of Virginia/24_SPRING
     
   )
   yo
-  ggsave('aerobic_anaerobic.png', plot = yo, path = pq, width = 7, height = 5, device = 'png', dpi = 500)
+  pq = file.path(workdir, "figures")
+  ggsave('figure_4A.png',plot = yo, path = pq , width = 7, height = 5, device='png', dpi=500)
 ```
 
 
 ```{r Ph evolutions pip}
-
-# Replace 'path_to_workbook' with the actual path to your Excel file
-path_to_workbook <- "C:/Users/jmf7ak/OneDrive - University of Virginia/24_SPRING/pH evolutions/pH_evolution_mics.csv"
+path_to_workbook <- file.path(workdir, "data/pH_evolution_mics.csv")
 
 # Read all sheets into a list of dataframes
   df <- read_csv(path_to_workbook)
@@ -355,12 +352,14 @@ ggplot(data, aes(x = Day_No, y = MIC, color = factor(pH, c('5.5','6.5','7.5')), 
     # Change font size of legend title
   ) + scale_color_manual(values = custom_colors)+
   labs(x = "Day", y = expression(log[2]('MIC')), title = "pH Evolution PIP")
+pq = file.path(workdir, "figures")
+ggsave('figure_1A.png', path = pq , width = 7, height = 5, device='png', dpi=500)
 ```
 
 ```{r Ph evolutions Cip}
 
 # Replace 'path_to_workbook' with the actual path to your Excel file
-path_to_workbook <- "C:/Users/jmf7ak/OneDrive - University of Virginia/24_SPRING/pH evolutions/pH_evolution_mics.csv"
+path_to_workbook <- file.path(workdir, "data/pH_evolution_mics.csv")
 
 # Read all sheets into a list of dataframes
   df <- read_csv(path_to_workbook)
@@ -404,12 +403,14 @@ ggplot(data, aes(x = Day_No, y = MIC, color = factor(pH, c('5.5','6.5','7.5')), 
     legend.title = element_text(size = 5), panel.grid.major = element_blank(), panel.grid.minor = element_blank() # Change font size of legend title
   ) + scale_color_manual(values = custom_colors)+
   labs(x = "Day", y = expression(log[2]('MIC')), title = "pH Evolution CIP")
+pq = file.path(workdir, "figures")
+ggsave('figure_1C.png', path = pq , width = 7, height = 5, device='png', dpi=500)
 ```
 
 ```{r Ph evolutions TOB}
 
 # Replace 'path_to_workbook' with the actual path to your Excel file
-path_to_workbook <- "C:/Users/jmf7ak/OneDrive - University of Virginia/24_SPRING/pH evolutions/pH_evolution_mics.csv"
+path_to_workbook <- file.path(workdir, "data/pH_evolution_mics.csv")
 
 # Read all sheets into a list of dataframes
   df <- read_csv(path_to_workbook)
@@ -452,8 +453,11 @@ ggplot(data, aes(x = Day_No, y = MIC, color = factor(pH, c('5.5','6.5','7.5')), 
     legend.title = element_text(size = 5), panel.grid.major = element_blank(), panel.grid.minor = element_blank()# Change font size of legend text
 )+ scale_color_manual(values = custom_colors)+
   labs(x = "Day", y = expression(log[2]('MIC')), title = "pH Evolution TOB")
+pq = file.path(workdir, "figures")
+ggsave('figure_1B.png', path = pq , width = 7, height = 5, device='png', dpi=500)
 
 ```
+
 ```{r}
 df$logfc <- log(df[['10']] / df[['0']], 2)
 df$pH = as.character(df$pH)
@@ -481,6 +485,7 @@ ggplot(df, aes(x = pH, y = logfc, fill = factor(pH, c('5.5','6.5', '7.5')))) +
     axis.text.x = element_text(angle = 45, hjust = 1)
   )
 ```
+
 ```{r}
 library(dplyr)
 library(broom)
@@ -502,13 +507,10 @@ kw_results <- df %>%
 # View results
 print(kw_results)
 ```
-```{r}
-```
 
 
+
 ```{r}
-library(dplyr)
-library(ggplot2)
 
 # Define pairwise comparisons
 my_comparisons <- list(
@@ -547,16 +549,10 @@ p <- ggplot(df, aes(x = pH, y = logfc, fill = pH)) +
 
 p
 
-# Save figure
-pq <- getwd()
-ggsave('pH_Evolution.png', plot = p, path = pq, width = 6, height = 4, device = 'png', dpi = 500)
 ```
 
 
 ```{r}
-library(dplyr)
-library(ggplot2)
-library(ggpubr)
 
 # Define pairwise comparisons
 my_comparisons <- list(
@@ -621,9 +617,7 @@ p <- ggplot(df, aes(x = pH, y = logfc, fill = fill_var)) +
 
 p
 
-# Save figure
-pq <- getwd()
-ggsave('pH_Evolution.png', plot = p, path = pq, width = 6, height = 4, device = 'png', dpi = 500)
+
 ```
 ```{r}
 library(dplyr)
@@ -660,7 +654,7 @@ p_cip <- ggplot(df_cip, aes(x = pH, y = logfc, fill = pH)) +
   stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", size = 3, label.y = c(6.5, 7.2, 7.9)) +
   ylim(-2.5, 8.5)
 
-ggsave('pH_Evolution_CIP.png', plot = p_cip, width = 2, height = 4, device = 'png', dpi = 500)
+ggsave('figure_2D_CIP.png',path = pq, plot = p_cip, width = 2, height = 4, device = 'png', dpi = 500)
 
 
 # --- 2. PIPERACILLIN (PIP) PLOT ---
@@ -683,7 +677,7 @@ p_pip <- ggplot(df_pip, aes(x = pH, y = logfc, fill = pH)) +
   stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", size = 3, step.increase = 0.12) +
   ylim(-2.5, 8.5)
 
-ggsave('pH_Evolution_PIP.png', plot = p_pip, width = 2, height = 4, device = 'png', dpi = 500)
+ggsave('figure_2D_PIP.png',path = pq, plot = p_pip, width = 2, height = 4, device = 'png', dpi = 500)
 
 
 # --- 3. TOBRAMYCIN (TOB) PLOT ---
@@ -706,20 +700,15 @@ p_tob <- ggplot(df_tob, aes(x = pH, y = logfc, fill = pH)) +
   stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", size = 3, step.increase = 0.2) +
   ylim(-2.5, 8.5)
 
-ggsave('pH_Evolution_TOB.png', plot = p_tob, width = 2, height = 4, device = 'png', dpi = 500)
+ggsave('figure_2D_TOB.png',path = pq, plot = p_tob, width = 2, height = 4, device = 'png', dpi = 500)
 p_tob
 p_pip
 p_cip
 ```
 
 ```{r}
-library("readxl")
-library('ggpubr')
-library('ggsignif')
-#setwd('C:/Users/jmf7aK/OneDrive - University of Virginia/22_SUMMMER')
-
-
-my_data <- read_excel("C:/Users/jmf7aK/OneDrive - University of Virginia/22_SUMMMER/medialogs.xlsx")
+path_to_workbook <- file.path(workdir, "data/medialogs.xlsx")
+my_data <- read_excel(path_to_workbook)
 
 compare_means(logs ~ media, data = my_data ,
               group.by = "drugs" ,label.y = c(29, 35, 40,45), p.adjust.method='BH')
@@ -766,17 +755,11 @@ p + stat_compare_means(
     legend.position = "bottom"
   ) + 
   scale_y_continuous(breaks = seq(-4, 6, by = 2))
-pq=getwd()
-ggsave('media_Evolution.png',path = pq , width = 6, height = 4, device='png', dpi=500)
+#ggsave('media_Evolution.png',path = pq , width = 6, height = 4, device='png', dpi=500)
 ```
 ```{r}
-library("readxl")
-library('ggpubr')
-library('ggsignif')
-library('dplyr')
-
 # Load data
-my_data <- read_excel("C:/Users/jmf7aK/OneDrive - University of Virginia/22_SUMMMER/medialogs.xlsx")
+my_data <- read_excel(path_to_workbook)
 
 # Rename factor values in the data frame so the labels change cleanly
 my_data$media <- recode(my_data$media, 
@@ -826,9 +809,8 @@ p + stat_compare_means(
     legend.text = element_text(size = 16)
   ) + 
   scale_y_continuous(breaks = seq(-4, 6, by = 2))
-
-pq <- getwd()
-ggsave('media_Evolution.png', path = pq, width = 6, height = 5, device = 'png', dpi = 500)
+pq = file.path(workdir, "figures")
+ggsave('figure_2B.png', plot = p, path = pq, width = 6, height = 5, device = 'png', dpi = 500)
 ```
 
 
