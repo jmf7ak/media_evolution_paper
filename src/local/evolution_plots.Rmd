@@ -184,7 +184,7 @@ ggplot(df, aes(x = factor(experiment, c('anaerobic','aerobic')), y = FC$d14, fil
 #ggsave('figure_1C.png',path = pq , width = 7, height = 5, device='png', dpi=500)
 ```
 
-```{r anaerobic to aerobic plots}
+```{r mic fold change plots}
 # Step 1: Calculate per-Drug max for label.y
 label_positions <- df %>%
   group_by(Drug) %>%
@@ -353,7 +353,7 @@ ggplot(data, aes(x = Day_No, y = MIC, color = factor(pH, c('5.5','6.5','7.5')), 
   ) + scale_color_manual(values = custom_colors)+
   labs(x = "Day", y = expression(log[2]('MIC')), title = "pH Evolution PIP")
 pq = file.path(workdir, "figures")
-ggsave('figure_1A.png', path = pq , width = 7, height = 5, device='png', dpi=500)
+ggsave('figure_2A.png', path = pq , width = 7, height = 5, device='png', dpi=500)
 ```
 
 ```{r Ph evolutions Cip}
@@ -404,7 +404,7 @@ ggplot(data, aes(x = Day_No, y = MIC, color = factor(pH, c('5.5','6.5','7.5')), 
   ) + scale_color_manual(values = custom_colors)+
   labs(x = "Day", y = expression(log[2]('MIC')), title = "pH Evolution CIP")
 pq = file.path(workdir, "figures")
-ggsave('figure_1C.png', path = pq , width = 7, height = 5, device='png', dpi=500)
+ggsave('figure_2C.png', path = pq , width = 7, height = 5, device='png', dpi=500)
 ```
 
 ```{r Ph evolutions TOB}
@@ -454,7 +454,7 @@ ggplot(data, aes(x = Day_No, y = MIC, color = factor(pH, c('5.5','6.5','7.5')), 
 )+ scale_color_manual(values = custom_colors)+
   labs(x = "Day", y = expression(log[2]('MIC')), title = "pH Evolution TOB")
 pq = file.path(workdir, "figures")
-ggsave('figure_1B.png', path = pq , width = 7, height = 5, device='png', dpi=500)
+ggsave('figure_2B.png', path = pq , width = 7, height = 5, device='png', dpi=500)
 
 ```
 
