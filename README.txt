@@ -1,1 +1,0 @@
-This is the code and files involved in processing and figure generation for the paper titled *Environment-mediated metabolic constraints shape antimicrobial resistance evolution in Pseudomonas aeruginosa*.
